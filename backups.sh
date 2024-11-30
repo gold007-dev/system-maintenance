@@ -1,3 +1,4 @@
+#!/bin/bash
 read -p "do you want to backup your packages? [Y/n]" backupPackages
 
 timestamp="$(date "+%Y-%m-%d.%H-%M-%S")"
@@ -5,9 +6,9 @@ timestamp="$(date "+%Y-%m-%d.%H-%M-%S")"
 if [ "$backupPackages" == "Y" ] || [ "$backupPackages" == "y" ]; then
     if [ $(command -v yay | wc -l) -gt 0 ]; then
         mkdir -p ~/backups/temp/$timestamp
-        yay -Qq >~/backups/temp/$timestamp/packages-yay.txt
+        yay -Qqe >~/backups/temp/$timestamp/packages-yay.txt
     fi
-    pacman -Qq >~/backups/temp/$timestamp/packages-pacman.txt
+    pacman -Qqe >~/backups/temp/$timestamp/packages-pacman.txt
 fi
 
 read -p "do you want to backup your config files from ~/.config? [Y/n]" backupConfig
@@ -15,11 +16,13 @@ read -p "do you want to backup your config files from ~/.config? [Y/n]" backupCo
 if [ "$backupConfig" == "Y" ] || [ "$backupConfig" == "y" ]; then
     mkdir -p ~/backups/temp/$timestamp
     cp -r ~/.config/ ~/backups/temp/$timestamp
+    rm ~/backups/temp/$timestamp/chromium -rf
+    find ~/backups/temp/$timestamp/ | grep Cache | rm -rf
 fi
 
 read -p "do you want to backup your local pacman database? [Y/n]" pacman
 
-if [ "$backupConfig" == "Y" ] || [ "$backupConfig" == "y" ]; then
+if [ "$pacman" == "Y" ] || [ "$pacman" == "y" ]; then
     mkdir -p ~/backups/temp/$timestamp
     tar -cjf ~/backups/temp/$timestamp/pacman_database.tar.bz2 /var/lib/pacman/local
 fi
