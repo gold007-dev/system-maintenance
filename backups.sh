@@ -15,8 +15,15 @@ read -p "do you want to backup your config files from ~/.config? [Y/n]" backupCo
 
 if [ "$backupConfig" == "Y" ] || [ "$backupConfig" == "y" ]; then
     mkdir -p ~/backups/temp/$timestamp
-    cp -r ~/.config/ ~/backups/temp/$timestamp
-    rm ~/backups/temp/$timestamp/chromium -rf
+    # cp -r ~/.config/ ~/backups/temp/$timestamp
+    # copy everything except for things inside ignore.config file
+    for folder in ~/.config/*;do
+        if [ "$(grep -E "^$(basename "$folder")$" ignore.config)" == "" ];then
+            cp -r "$folder" ~/backups/temp/$timestamp/.config/
+        else
+            echo "ignoring $folder"
+        fi
+    done
     find ~/backups/temp/$timestamp/ | grep Cache | rm -rf
 fi
 
