@@ -18,7 +18,7 @@ if [ "$backupConfig" == "Y" ] || [ "$backupConfig" == "y" ]; then
     # cp -r ~/.config/ ~/backups/temp/$timestamp
     # copy everything except for things inside ignore.config file
     for folder in ~/.config/*;do
-        if [ "$(grep -E "^$(basename "$folder")$" ignore.config)" == "" ];then
+        if [ "$(grep -E "^$(basename "$folder")$" $(dirname $0)/ignore.config)" == "" ];then
             cp -r "$folder" ~/backups/temp/$timestamp/.config/
         else
             echo "ignoring $folder"
